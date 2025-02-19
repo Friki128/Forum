@@ -9,10 +9,10 @@ import jakarta.persistence.ManyToOne;
 public class Reply extends BaseEntity{
     private String content;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="id")
+    @JoinColumn(name="topic_id")
     private Topic topic;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="id")
+    @JoinColumn(name="user_id")
     private User user;
     private String createdAt;
     private String updatedAt;

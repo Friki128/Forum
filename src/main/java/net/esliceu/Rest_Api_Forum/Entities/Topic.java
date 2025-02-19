@@ -10,10 +10,10 @@ public class Topic extends BaseEntity{
     private String title;
     private String content;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "category_id")
     private Category category;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "user_id")
     private User user;
     private String createdAt;
     private String updatedAt;

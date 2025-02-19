@@ -15,8 +15,8 @@ public class Category extends BaseEntity{
     private String color;
     @ManyToMany
     @JoinTable(
-            joinColumns = @JoinColumn(name = "id"),
-            inverseJoinColumns = @JoinColumn(name="id")
+            joinColumns = @JoinColumn(name = "moderator_id"),
+            inverseJoinColumns = @JoinColumn(name="category_id")
     )
     private List<User> moderators;
 
