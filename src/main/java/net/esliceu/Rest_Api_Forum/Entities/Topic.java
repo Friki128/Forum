@@ -17,7 +17,7 @@ public class Topic extends BaseEntity{
     private User user;
     private String createdAt;
     private String updatedAt;
-    @OneToMany(mappedBy = "topic")
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
     private List<Reply> replies;
     private Integer numberOfReplies;
 

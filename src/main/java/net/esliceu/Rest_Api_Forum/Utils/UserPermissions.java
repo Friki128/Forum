@@ -6,12 +6,12 @@ import net.esliceu.Rest_Api_Forum.Entities.User;
 import java.util.List;
 
 public class UserPermissions {
-    long id;
-    String email;
-    String name;
-    String role;
-    String imageUrl;
-    Permissions permissions;
+    private long id;
+    private String email;
+    private String name;
+    private String role;
+    private String imageUrl;
+    private Permissions permissions;
 
     public UserPermissions(User user, List<Category> categories) {
         this.id = user.getId();

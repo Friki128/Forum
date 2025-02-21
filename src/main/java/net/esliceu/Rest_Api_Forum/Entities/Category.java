@@ -1,9 +1,6 @@
 package net.esliceu.Rest_Api_Forum.Entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -13,7 +10,7 @@ public class Category extends BaseEntity{
     private String description;
     private String slug;
     private String color;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             joinColumns = @JoinColumn(name = "moderator_id"),
             inverseJoinColumns = @JoinColumn(name="category_id")

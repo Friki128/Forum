@@ -6,18 +6,19 @@ import jakarta.persistence.Entity;
 
 @Entity
 public class User extends BaseEntity {
-    String role;
-    String name;
-    String email;
+    private String role;
+    private String name;
+    private String email;
     @Column(name = "image_url")
-    String imageUrl;
-    String password;
+    private String imageUrl;
+    private String password;
 
-    public User(String role, String name, String email, String imageUrl) {
+    public User(String role, String name, String email, String imageUrl, String password) {
         this.role = role;
         this.name = name;
         this.email = email;
         this.imageUrl = imageUrl;
+        this.password = password;
     }
 
     public String getRole() {
@@ -50,5 +51,13 @@ public class User extends BaseEntity {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -2,6 +2,7 @@ package net.esliceu.Rest_Api_Forum.Entities;
 import jakarta.persistence.*;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @SequenceGenerator(name = "global_gen", sequenceName = "global_seq", allocationSize = 1)
 @org.hibernate.annotations.SQLInsert(sql = "CREATE SEQUENCE IF NOT EXISTS global_seq START WITH 1 INCREMENT BY 1")
 public class BaseEntity {
