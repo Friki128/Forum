@@ -13,6 +13,8 @@ public class User extends BaseEntity {
     private String imageUrl;
     private String password;
 
+    public User(){}
+
     public User(String role, String name, String email, String imageUrl, String password) {
         this.role = role;
         this.name = name;

@@ -17,6 +17,8 @@ public class Reply extends BaseEntity{
     private String createdAt;
     private String updatedAt;
 
+    public Reply(){}
+
     public Reply(String content, Topic topic, User user, String createdAt, String updatedAt) {
         this.content = content;
         this.topic = topic;

@@ -39,4 +39,7 @@ public class FindAllService {
         return replyRepo.findAllByTopic(topic);
     }
 
+    public List<Category> getAllCategoriesWhereUserModerates(long id) throws ItemNotFoundException {
+        return categoryRepo.findAllByModeratorsId(id);
+    }
 }

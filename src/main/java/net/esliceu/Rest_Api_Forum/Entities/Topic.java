@@ -21,6 +21,8 @@ public class Topic extends BaseEntity{
     private List<Reply> replies;
     private Integer numberOfReplies;
 
+    public Topic(){}
+
     public Topic(int views, String title, String content, Category category, User user, String createdAt, String updatedAt, List<Reply> replies, Integer numberOfReplies) {
         Views = views;
         this.title = title;

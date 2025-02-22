@@ -45,6 +45,16 @@ public class JwtUtil {
         }
     }
 
+    public static String getIat(String token) throws ErrorInJWTException {
+        try{
+            DecodedJWT decoded = decode(token);
+            return decoded.getIssuedAt().toString();
+        }catch (Exception e){
+            throw new ErrorInJWTException();
+        }
+
+    }
+
     public static User getUserFromToken(String token) throws ErrorInJWTException {
         try{
             DecodedJWT decoded = decode(token);

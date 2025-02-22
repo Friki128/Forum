@@ -49,6 +49,12 @@ public class UpdateService {
         topic.setUpdatedAt(TimeUtil.getTime());
         return  topicRepo.save(topic);
     }
+    public void AddView(long topicId) throws ItemNotFoundException {
+        Topic topic = findService.getTopic(topicId);
+        topic.setViews(topic.getViews() + 1);
+        topicRepo.save(topic);
+    }
+
     public Boolean updatePassword(String email, String password, String newPassword) {
         User user = findService.login(email, password);
         if(user == null) return false;

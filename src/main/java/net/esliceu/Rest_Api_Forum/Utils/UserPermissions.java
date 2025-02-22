@@ -28,6 +28,7 @@ public class UserPermissions {
         this.email = user.getEmail();
         this.imageUrl = user.getImageUrl();
         this.name = user.getName();
+        this.permissions = null;
     }
 
     public long getId() {

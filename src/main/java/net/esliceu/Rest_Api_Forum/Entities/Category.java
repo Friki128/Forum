@@ -17,6 +17,8 @@ public class Category extends BaseEntity{
     )
     private List<User> moderators;
 
+    public Category(){}
+
     public Category(String title, String description, String slug, String color, List<User> moderators) {
         this.title = title;
         this.description = description;
