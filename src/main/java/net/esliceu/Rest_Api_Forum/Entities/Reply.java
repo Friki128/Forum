@@ -1,17 +1,23 @@
 package net.esliceu.Rest_Api_Forum.Entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-public class Reply extends BaseEntity{
+public class Reply{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String content;
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name="topic_id")
     private Topic topic;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name="user_id")
     private User user;
     private String createdAt;
@@ -25,6 +31,14 @@ public class Reply extends BaseEntity{
         this.user = user;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getContent() {
@@ -66,4 +80,5 @@ public class Reply extends BaseEntity{
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
+    public long get_id(){return id;}
 }

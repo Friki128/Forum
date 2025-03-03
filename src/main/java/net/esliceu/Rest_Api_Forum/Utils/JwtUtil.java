@@ -10,6 +10,8 @@ import net.esliceu.Rest_Api_Forum.Exceptions.ErrorInJWTException;
 import net.esliceu.Rest_Api_Forum.Services.FindService;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JwtUtil {
     @Autowired
@@ -18,14 +20,18 @@ public class JwtUtil {
     private static final String SECRET = "testKey";
     private static final long EXPIRATION = 3600000;
 
-    public static String getToken(User user) throws JsonProcessingException {
+    public static String getToken(UserPermissions user) throws JsonProcessingException {
+        HashMap<String, Object> permissions = new HashMap<>();
+        permissions.put("categories", user.getPermissions().getCategories());
+        permissions.put("root", user.getPermissions().getRoot());
         return JWT.create()
                 .withSubject(user.getEmail())
                 .withClaim("role", user.getRole())
+                .withClaim("_id", user.get_id())
+                .withClaim("permissions", permissions)
                 .withClaim("id", user.getId())
                 .withClaim("name", user.getName())
                 .withClaim("email", user.getEmail())
-                .withClaim("avatarUrl", user.getImageUrl())
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION))
                 .sign(Algorithm.HMAC256(SECRET));
@@ -33,7 +39,8 @@ public class JwtUtil {
 
     public static DecodedJWT decode(String token){
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(SECRET)).build();
-        return verifier.verify(token);
+        return verifier.verify(token.substring(7));
+
     }
 
     public static boolean validate(String token){
@@ -55,10 +62,10 @@ public class JwtUtil {
 
     }
 
-    public static User getUserFromToken(String token) throws ErrorInJWTException {
+    public static Long getUserFromToken(String token) throws ErrorInJWTException {
         try{
             DecodedJWT decoded = decode(token);
-            return findService.getUser(decoded.getClaim("id").asLong());
+            return decoded.getClaim("id").asLong();
         }catch (Exception e){
             throw new ErrorInJWTException();
         }

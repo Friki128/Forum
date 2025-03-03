@@ -1,14 +1,8 @@
 package net.esliceu.Rest_Api_Forum.Services;
 
-import net.esliceu.Rest_Api_Forum.Entities.Category;
-import net.esliceu.Rest_Api_Forum.Entities.Reply;
-import net.esliceu.Rest_Api_Forum.Entities.Topic;
-import net.esliceu.Rest_Api_Forum.Entities.User;
+import net.esliceu.Rest_Api_Forum.Entities.*;
 import net.esliceu.Rest_Api_Forum.Exceptions.ItemNotFoundException;
-import net.esliceu.Rest_Api_Forum.Repositories.CategoryRepo;
-import net.esliceu.Rest_Api_Forum.Repositories.ReplyRepo;
-import net.esliceu.Rest_Api_Forum.Repositories.TopicRepo;
-import net.esliceu.Rest_Api_Forum.Repositories.UserRepo;
+import net.esliceu.Rest_Api_Forum.Repositories.*;
 import net.esliceu.Rest_Api_Forum.Utils.HashUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +19,8 @@ public class FindService {
     private TopicRepo topicRepo;
     @Autowired
     private ReplyRepo replyRepo;
+    @Autowired
+    private ImageRepo imageRepo;
 
     public User getUser(long id) throws ItemNotFoundException {
         Optional<User> user = userRepo.findById(id);
@@ -48,8 +44,9 @@ public class FindService {
         if(topic.isEmpty()) throw new ItemNotFoundException();
         return topic.get();
     }
-    public User login(String email, String password){
+    public User login(String email, String password) throws ItemNotFoundException {
         Optional<User> user = userRepo.findByEmailAndPassword(email, HashUtil.hash(password));
+        if(user.isEmpty()) throw new ItemNotFoundException();
         return user.get();
     }
     public Category getCategoryBySlug(String slug) throws ItemNotFoundException {
@@ -60,5 +57,15 @@ public class FindService {
     public Boolean checkEmailAvailable(String email){
         Optional<User> user = userRepo.findByEmail(email);
         return user.isEmpty();
+    }
+
+    public Image getImg(long id) throws ItemNotFoundException {
+        Optional<Image> image = imageRepo.findById(id);
+        if(image.isEmpty()) throw new ItemNotFoundException();
+        return image.get();
+    }
+    public Image getImgByUser(long userId) throws ItemNotFoundException {
+        Optional<Image> image = imageRepo.findByUserId(userId);
+        return image.orElse(null);
     }
 }

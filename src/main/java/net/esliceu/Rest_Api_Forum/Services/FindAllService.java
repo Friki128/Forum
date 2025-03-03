@@ -40,6 +40,8 @@ public class FindAllService {
     }
 
     public List<Category> getAllCategoriesWhereUserModerates(long id) throws ItemNotFoundException {
+        User user = findService.getUser(id);
+        if(user.getRole().equals("admin")) return categoryRepo.findAll();
         return categoryRepo.findAllByModeratorsId(id);
     }
 }

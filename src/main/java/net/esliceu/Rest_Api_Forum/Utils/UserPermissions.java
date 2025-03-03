@@ -10,23 +10,23 @@ public class UserPermissions {
     private String email;
     private String name;
     private String role;
-    private String imageUrl;
+    private String avatarUrl;
     private Permissions permissions;
 
     public UserPermissions(User user, List<Category> categories) {
         this.id = user.getId();
         this.role = user.getRole();
         this.email = user.getEmail();
-        this.imageUrl = user.getImageUrl();
+        this.avatarUrl = user.getAvatarUrl();
         this.name = user.getName();
-        this.permissions = new Permissions(categories);
+        this.permissions = new Permissions(user.getRole().equals("admin"), categories);
     }
 
     public UserPermissions(User user) {
         this.id = user.getId();
         this.role = user.getRole();
         this.email = user.getEmail();
-        this.imageUrl = user.getImageUrl();
+        this.avatarUrl = user.getAvatarUrl();
         this.name = user.getName();
         this.permissions = null;
     }
@@ -63,12 +63,12 @@ public class UserPermissions {
         this.role = role;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public Permissions getPermissions() {
@@ -78,4 +78,5 @@ public class UserPermissions {
     public void setPermissions(Permissions permissions) {
         this.permissions = permissions;
     }
+    public long get_id(){return id;}
 }

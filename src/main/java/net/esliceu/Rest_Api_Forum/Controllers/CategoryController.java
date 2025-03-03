@@ -7,12 +7,14 @@ import net.esliceu.Rest_Api_Forum.Exceptions.ErrorInJWTException;
 import net.esliceu.Rest_Api_Forum.Exceptions.ItemNotFoundException;
 import net.esliceu.Rest_Api_Forum.Services.*;
 import net.esliceu.Rest_Api_Forum.Utils.JwtUtil;
+import net.esliceu.Rest_Api_Forum.Utils.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/categories")
@@ -31,75 +33,76 @@ public class CategoryController {
     FindService findService;
 
     @GetMapping("/{slug}")
-    public ResponseEntity<Category> getCategory(@RequestHeader("Authorization") String token, @PathVariable String slug){
-        if(!JwtUtil.validate(token)) return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+    public ResponseEntity<Object> getCategory(@PathVariable String slug){
         try {
 
             return new ResponseEntity<>(findService.getCategoryBySlug(slug), HttpStatus.OK);
         } catch (ItemNotFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Message("Not Found"), HttpStatus.NOT_FOUND);
         }
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<Category>> getCategories(@RequestHeader("Authorization") String token){
-        if(!JwtUtil.validate(token)) return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+    @GetMapping
+    public ResponseEntity<List<Category>> getCategories(){
         return new ResponseEntity<>(findAllService.getAllCategories(), HttpStatus.OK);
     }
 
-    @PostMapping("/")
-    public ResponseEntity<Category> addCategory(@RequestHeader("Authorization") String token, @RequestParam String title, @RequestParam String description){
-        if(!JwtUtil.validate(token)) return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+    @PostMapping
+    public ResponseEntity<Object> addCategory(@RequestHeader("Authorization") String token, @RequestBody Map<String, Object> payload){
+        if(!JwtUtil.validate(token)) return new ResponseEntity<>(new Message("Could Not Add Category"), HttpStatus.UNAUTHORIZED);
         try {
-            User user = JwtUtil.getUserFromToken(token);
+            String title = payload.get("title").toString();
+            String description = payload.get("description").toString();
+            User user = findService.getUser(JwtUtil.getUserFromToken(token));
             if(!permissionService.checkAdmin(user.getId())) return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
             return new ResponseEntity<>(addService.addCategory(description, title), HttpStatus.CREATED);
         } catch (ItemNotFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Message("Could Not Add Category"), HttpStatus.NOT_FOUND);
         } catch (ErrorInJWTException e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Message("Could Not Add Category"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/{slug}")
-    public ResponseEntity<Category> updateCategory(@RequestHeader("Authorization") String token, @PathVariable String slug, @RequestParam String title, @RequestParam String description){
-        if(!JwtUtil.validate(token)) return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+    public ResponseEntity<Object> updateCategory(@RequestHeader("Authorization") String token, @PathVariable String slug, @RequestBody Map<String, Object> payload){
+        if(!JwtUtil.validate(token)) return new ResponseEntity<>(new Message("Could Not Update Category"), HttpStatus.UNAUTHORIZED);
         try {
-            User user = JwtUtil.getUserFromToken(token);
+            String description = payload.get("description").toString();
+            String title = payload.get("title").toString();
+            User user = findService.getUser(JwtUtil.getUserFromToken(token));
             Category category = findService.getCategoryBySlug(slug);
             if(!permissionService.validateCategory(user.getId(), category.getId())) return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
             return new ResponseEntity<>(updateService.updateCategory(slug, description, title), HttpStatus.OK);
         } catch (ItemNotFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Message("Could Not Update Category"), HttpStatus.NOT_FOUND);
         } catch (ErrorInJWTException e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Message("Could Not Update Category"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @DeleteMapping("/{slug}")
-    public ResponseEntity<Boolean> deleteCategory(@RequestHeader("Authorization") String token, @PathVariable String slug){
-        if(!JwtUtil.validate(token)) return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
+    public ResponseEntity<Object> deleteCategory(@RequestHeader("Authorization") String token, @PathVariable String slug){
+        if(!JwtUtil.validate(token)) return new ResponseEntity<>(new Message("Could Not Delete Category"), HttpStatus.UNAUTHORIZED);
         try {
-            User user = JwtUtil.getUserFromToken(token);
+            User user = findService.getUser(JwtUtil.getUserFromToken(token));
             Category category = findService.getCategoryBySlug(slug);
             if(!permissionService.validateCategory(user.getId(), category.getId())) return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
             return new ResponseEntity<>(deleteService.deleteCategory(category.getId()), HttpStatus.OK);
         } catch (ItemNotFoundException e) {
-            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Message("Could Not Delete Category"), HttpStatus.NOT_FOUND);
         } catch (ErrorInJWTException e) {
-            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Message("Could Not Delete Category"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
     @GetMapping("/{slug}/topics")
-    public ResponseEntity<List<Topic>> getTopics(@RequestHeader("Authorization") String token, @PathVariable String slug){
-        if(!JwtUtil.validate(token)) return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+    public ResponseEntity<Object> getTopics(@PathVariable String slug){
         try {
             Category category = findService.getCategoryBySlug(slug);
             return new ResponseEntity<>(findAllService.getAllCategoryTopics(category.getId()), HttpStatus.OK);
         } catch (ItemNotFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Message("Not Found"), HttpStatus.NOT_FOUND);
         }
 
     }

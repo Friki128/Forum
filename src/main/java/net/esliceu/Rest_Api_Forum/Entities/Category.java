@@ -1,11 +1,16 @@
 package net.esliceu.Rest_Api_Forum.Entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Fetch;
 
 import java.util.List;
 
 @Entity
-public class Category extends BaseEntity{
+public class Category{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String title;
     private String description;
     private String slug;
@@ -16,6 +21,8 @@ public class Category extends BaseEntity{
             inverseJoinColumns = @JoinColumn(name="category_id")
     )
     private List<User> moderators;
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    List<Topic> topics;
 
     public Category(){}
 
@@ -25,6 +32,14 @@ public class Category extends BaseEntity{
         this.slug = slug;
         this.color = color;
         this.moderators = moderators;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -66,4 +81,5 @@ public class Category extends BaseEntity{
     public void setModerators(List<User> moderators) {
         this.moderators = moderators;
     }
+    public long get_id(){return id;}
 }

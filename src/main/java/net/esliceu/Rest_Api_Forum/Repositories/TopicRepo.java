@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface TopicRepo extends JpaRepository<Topic, Long> {
     List<Topic> findAllByCategory(Category category);
+
+    void deleteAllByCategory(Category category);
 }

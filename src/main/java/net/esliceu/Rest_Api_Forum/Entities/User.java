@@ -1,26 +1,36 @@
 package net.esliceu.Rest_Api_Forum.Entities;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 
 @Entity
-public class User extends BaseEntity {
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String role;
     private String name;
     private String email;
-    @Column(name = "image_url")
-    private String imageUrl;
+    @Column(name = "image_url", nullable = true)
+    private String avatarUrl;
     private String password;
 
     public User(){}
 
-    public User(String role, String name, String email, String imageUrl, String password) {
+    public User(String role, String name, String email, String avatarUrl, String password) {
         this.role = role;
         this.name = name;
         this.email = email;
-        this.imageUrl = imageUrl;
+        this.avatarUrl = avatarUrl;
         this.password = password;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getRole() {
@@ -47,12 +57,12 @@ public class User extends BaseEntity {
         this.email = email;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public String getPassword() {
@@ -62,4 +72,5 @@ public class User extends BaseEntity {
     public void setPassword(String password) {
         this.password = password;
     }
+    public long get_id(){return id;}
 }

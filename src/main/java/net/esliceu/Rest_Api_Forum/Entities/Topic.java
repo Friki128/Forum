@@ -1,23 +1,33 @@
 package net.esliceu.Rest_Api_Forum.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
 @Entity
-public class Topic extends BaseEntity{
+public class Topic{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private int Views;
     private String title;
     private String content;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "category_id")
     private Category category;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id")
     private User user;
     private String createdAt;
     private String updatedAt;
-    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Reply> replies;
     private Integer numberOfReplies;
 
@@ -33,6 +43,14 @@ public class Topic extends BaseEntity{
         this.updatedAt = updatedAt;
         this.replies = replies;
         this.numberOfReplies = numberOfReplies;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public int getViews() {
@@ -100,10 +118,14 @@ public class Topic extends BaseEntity{
     }
 
     public Integer getNumberOfReplies() {
-        return numberOfReplies;
+        return replies.size();
     }
 
     public void setNumberOfReplies(Integer numberOfReplies) {
         this.numberOfReplies = numberOfReplies;
+    }
+
+    public long get_id(){
+        return id;
     }
 }

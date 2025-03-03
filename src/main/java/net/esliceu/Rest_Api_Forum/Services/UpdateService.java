@@ -1,19 +1,15 @@
 package net.esliceu.Rest_Api_Forum.Services;
 
-import net.esliceu.Rest_Api_Forum.Entities.Category;
-import net.esliceu.Rest_Api_Forum.Entities.Reply;
-import net.esliceu.Rest_Api_Forum.Entities.Topic;
-import net.esliceu.Rest_Api_Forum.Entities.User;
+import net.esliceu.Rest_Api_Forum.Entities.*;
 import net.esliceu.Rest_Api_Forum.Exceptions.EmailAlreadyInUserException;
 import net.esliceu.Rest_Api_Forum.Exceptions.ItemNotFoundException;
-import net.esliceu.Rest_Api_Forum.Repositories.CategoryRepo;
-import net.esliceu.Rest_Api_Forum.Repositories.ReplyRepo;
-import net.esliceu.Rest_Api_Forum.Repositories.TopicRepo;
-import net.esliceu.Rest_Api_Forum.Repositories.UserRepo;
+import net.esliceu.Rest_Api_Forum.Repositories.*;
 import net.esliceu.Rest_Api_Forum.Utils.HashUtil;
 import net.esliceu.Rest_Api_Forum.Utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 @Service
 public class UpdateService {
@@ -27,6 +23,8 @@ public class UpdateService {
     private TopicRepo topicRepo;
     @Autowired
     private ReplyRepo replyRepo;
+    @Autowired
+    private ImageRepo imageRepo;
 
     public Reply updateReply(long id, String content) throws ItemNotFoundException {
         Reply reply = findService.getReply(id);
@@ -55,7 +53,7 @@ public class UpdateService {
         topicRepo.save(topic);
     }
 
-    public Boolean updatePassword(String email, String password, String newPassword) {
+    public Boolean updatePassword(String email, String password, String newPassword) throws ItemNotFoundException {
         User user = findService.login(email, password);
         if(user == null) return false;
         user.setPassword(HashUtil.hash(newPassword));
@@ -65,11 +63,11 @@ public class UpdateService {
     public User updateUser(long id, String avatar, String email, String name) throws ItemNotFoundException, EmailAlreadyInUserException {
         User user = findService.getUser(id);
         if(!user.getEmail().equals(email)){
-            if(findService.checkEmailAvailable(email)) throw new EmailAlreadyInUserException();
+            if(!findService.checkEmailAvailable(email)) throw new EmailAlreadyInUserException();
             user.setEmail(email);
         }
         user.setName(name);
-        user.setImageUrl(avatar);
+        user.setAvatarUrl(avatar);
        return userRepo.save(user);
     }
     public void addModerator(User user, String categorySlug) throws ItemNotFoundException {
@@ -77,4 +75,10 @@ public class UpdateService {
         category.getModerators().add(user);
         categoryRepo.save(category);
     }
+    public Image updateImage(long id, byte[] imageData) throws ItemNotFoundException, IOException {
+        Image image = findService.getImg(id);
+        image.setImageData(imageData);
+        return image;
+    }
+
 }
