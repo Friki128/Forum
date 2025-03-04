@@ -63,10 +63,10 @@ public class UserController {
         try {
             String email = payload.get("email").toString();
             String avatar = "";
-            byte[] image = Base64.getDecoder().decode(payload.get("avatar").toString().split(",")[1]);
             String name = payload.get("name").toString();
             User user = findService.getUser(JwtUtil.getUserFromToken(token));
-            if(image.length != 0){
+            if(payload.get("avatar") != null){
+                byte[] image = Base64.getDecoder().decode(payload.get("avatar").toString().split(",")[1]);
                 Image newImage = findService.getImgByUser(user.getId());
                 if(newImage != null) newImage = updateService.updateImage(newImage.getId(), image);
                 else newImage = addService.addImage(user.getId(), image);
