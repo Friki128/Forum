@@ -12,6 +12,7 @@ import net.esliceu.Rest_Api_Forum.Services.FindService;
 import net.esliceu.Rest_Api_Forum.Services.UpdateService;
 import net.esliceu.Rest_Api_Forum.Utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,9 @@ public class UserController {
     AddService addService;
     @Autowired
     FindAllService findAllService;
+
+    @Value("${page.url}")
+    private String page;
 
     @PutMapping("/profile/password")
     public ResponseEntity<Object> updatePassword(@RequestHeader("Authorization") String token, @RequestBody Map<String, Object> payload){
@@ -66,7 +70,7 @@ public class UserController {
                 Image newImage = findService.getImgByUser(user.getId());
                 if(newImage != null) newImage = updateService.updateImage(newImage.getId(), image);
                 else newImage = addService.addImage(user.getId(), image);
-                avatar = "http://localhost:8080/img/" + newImage.getId();
+                avatar = page + "/img/" + newImage.getId();
 
             }
             User newUser = updateService.updateUser(user.getId(), avatar, email, name);

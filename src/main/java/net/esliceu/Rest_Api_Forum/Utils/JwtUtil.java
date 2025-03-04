@@ -9,15 +9,15 @@ import net.esliceu.Rest_Api_Forum.Entities.User;
 import net.esliceu.Rest_Api_Forum.Exceptions.ErrorInJWTException;
 import net.esliceu.Rest_Api_Forum.Services.FindService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 public class JwtUtil {
-    @Autowired
-    private static FindService findService;
 
-    private static final String SECRET = "testKey";
+    private static final String SECRET = SecretClass.getStaticSecret();
     private static final long EXPIRATION = 3600000;
 
     public static String getToken(UserPermissions user) throws JsonProcessingException {
